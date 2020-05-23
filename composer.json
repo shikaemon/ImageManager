@@ -1,0 +1,13 @@
+{
+    "name": "shikaemon/imagemanager",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "shikaemon",
+            "email": "deltadeltadeer@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
