@@ -1,13 +1,38 @@
 {
-    "name": "shikaemon/imagemanager",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "shikaemon",
-            "email": "deltadeltadeer@gmail.com"
-        }
+  "name": "shikaemon/imagemanager",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "shikaemon",
+      "email": "deltadeltadeer@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^7.0",
+    "aws/aws-sdk-php": "^3",
+    "intervention/image": "^2",
+    "laravel/framework": "^5.5|^6.0|^7.0|^8.0",
+    "laravelcollective/html": "^6.1",
+    "league/flysystem-aws-s3-v3": "^1.0"
+  },
+  "autoload": {
+    "files": [
+      "src/helpers.php"
     ],
-    "minimum-stability": "dev",
-    "require": {}
+    "psr-4": {
+      "Shikaemon\\ImageManager\\": "./src/"
+    },
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.0|^7.0|^8.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Shikaemon\\ImageManager\\ImageManagerServiceProvider"
+      ]
+    }
+  }
 }

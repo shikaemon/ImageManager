@@ -1,0 +1,106 @@
+<?php
+
+namespace DummyNamespace;
+
+use Exception;
+use Illuminate\Http\Request;
+use Shikaemon\ImageManager\Libraries\Repositories\Interfaces\ImageInterface;
+use Shikaemon\ImageManager\Libraries\Models\Database\ImageModel;
+use Shikaemon\ImageManager\Image;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class SampleController
+{
+    private $image;
+
+    public function __construct(ImageInterface $image)
+    {
+        $this->image = $image;
+    }
+
+    public function indexAction(Request $request)
+    {
+        $images = ImageModel::all();
+        return view('web.test', ['images' => $images]);
+    }
+
+    public function uploadAction(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            $data = Image::register($request->image_file_input, Auth::user()->id ?? null);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'code' => 500,
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'data' => [
+                'image_id' => $data->id,
+                'file_path' => tmp_image_path($data->file_path),
+            ],
+        ]);
+    }
+
+    public function activateAction(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            // TODO $userId is nullable. you have to check user access right before activate.
+            $userId = Auth::user()->id ?? null;
+
+            $data = Image::activate($request->image_id, $userId);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'code' => 500,
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'data' => [
+                'image_id' => $data->id,
+                'file_path' => $data->file_path,
+            ],
+        ]);
+    }
+
+    public function deleteAction(Request $request)
+    {
+        try{
+            DB::beginTransaction();
+            // TODO $userId is nullable. you have to check user access right before delete.
+            $userId = Auth::user()->id ?? null;
+
+            $data = Image::delete($request->image_id, $userId);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'code' => 500,
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ]);
+        }
+
+        return response()->json([
+            'code' => 200,
+            'image_id' => $request->image_id,
+        ]);
+    }
+
+}

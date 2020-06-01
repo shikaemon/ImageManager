@@ -1,0 +1,15 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::group(['prefix' => config('image_manager.route.prefix'), 'namespace' => config('image_manager.route.namespace'), 'middleware' => config('image_manager.route.middleware')], function () {
+    Route::delete('/delete', ['as' => 'image_delete', 'uses' => 'ImageController@deleteAction']);
+    Route::post('/{image_id}/activate', ['as' => 'image_activate', 'uses' => 'ImageController@activateAction'])->where('image_id', '\d+');
+    Route::post('/upload', ['as' => 'image_upload', 'uses' => 'ImageController@postAction']);
+    Route::get('/{year}/{mon}/{day}/{image_id}/{image_type}', ['as' => 'image_generate', 'uses' => 'ImageController@generateAction'])
+        ->where('year', '\d{4}')
+        ->where('mon', '\d{2}')
+        ->where('day', '\d{2}')
+        ->where('image_id', '\d+')
+        ->where('image_type', '[0-9a-zA-Z]+');
+});
